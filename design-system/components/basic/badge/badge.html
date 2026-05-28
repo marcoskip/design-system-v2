@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Badge — DS 2.0 · InfoPrice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- Badge usa ícone SEMPRE filled → só a fonte Material Icons (não a Outlined) -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <!-- Tokens do DS (fonte única de cores/tipografia/espaço/radius) -->
+  <link rel="stylesheet" href="../../../dist/tokens.css" />
+  <!-- CSS do componente (mesma pasta) -->
+  <link rel="stylesheet" href="badge.css" />
+  <style>
+    /* ↓↓↓ apenas chrome da página de preview — NÃO faz parte do componente ↓↓↓ */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-family-base);
+      color: var(--color-gray-900);
+      background: var(--color-gray-50);
+    }
+
+    /* Cabeçalho da página de documentação */
+    .pv__appbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; padding: 0 24px; background: var(--color-white); border-bottom: 1px solid var(--color-gray-200); position: sticky; top: 0; z-index: 10; }
+    .pv__appbar__left, .pv__appbar__right { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
+    .pv__appbar__logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+    .pv__appbar__ds { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); letter-spacing: -0.2px; white-space: nowrap; }
+    .pv__appbar__ds-info { color: var(--color-gray-900); }
+    .pv__appbar__ds-design { color: var(--color-blue-400); }
+    .pv__appbar__sep { width: 1px; height: 22px; background: var(--color-gray-300); flex-shrink: 0; }
+    .pv__appbar__component { font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); color: var(--color-gray-700); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pv__appbar__updated { font-size: var(--font-size-xs); color: var(--color-gray-600); white-space: nowrap; }
+    .pv__appbar__version { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--color-blue-light-15, #e1eefd); color: var(--color-blue-700); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); white-space: nowrap; }
+
+    /* Wrapper do conteúdo (mantém o respiro que antes ficava no body) */
+    .pv__content { padding: 40px; }
+
+    /* Janela de "Última atualização" — changelog do componente */
+    .pv__changelog {
+      background: var(--color-blue-light-5, #f5f9fe);
+      border: 1px solid var(--color-blue-light-20, #d7e8fc);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 0 0 36px;
+      max-width: 720px;
+    }
+    .pv__changelog-title {
+      display: flex; align-items: center; gap: 6px;
+      font-size: var(--font-size-xs); font-weight: var(--font-weight-bold);
+      text-transform: uppercase; letter-spacing: 0.4px;
+      color: var(--color-gray-700); margin: 0 0 12px;
+    }
+    .pv__changelog-title .material-icons { font-size: 16px; color: var(--color-blue-400); }
+    .pv__changelog-grid {
+      display: grid; grid-template-columns: max-content 1fr;
+      gap: 8px 20px; margin: 0;
+    }
+    .pv__changelog-grid dt {
+      font-size: 11px; font-weight: var(--font-weight-bold);
+      text-transform: uppercase; letter-spacing: 0.3px;
+      color: var(--color-gray-600); align-self: start; padding-top: 1px;
+    }
+    .pv__changelog-grid dd {
+      margin: 0; font-size: var(--font-size-md);
+      color: var(--color-gray-900); line-height: var(--line-height-md);
+    }
+    /* Toggle "Ver atualizações anteriores" + histórico */
+    .pv__changelog-toggle {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 16px; padding: 0;
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold); color: var(--color-blue-400);
+    }
+    .pv__changelog-toggle .material-icons { font-size: 18px; transition: transform 150ms ease; }
+    .pv__changelog-toggle[aria-expanded="true"] .material-icons { transform: rotate(180deg); }
+    .pv__changelog-history { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--color-gray-300); }
+    .pv__changelog-history[hidden] { display: none; }
+    .pv__changelog-entry { margin-bottom: 20px; }
+    .pv__changelog-entry:last-child { margin-bottom: 0; }
+    .pv__changelog-empty { margin: 0; font-size: var(--font-size-sm); color: var(--color-gray-600); font-style: italic; }
+    .pv__changelog-grid dd code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: var(--color-white); padding: 1px 4px; border-radius: var(--radius-sm); }
+    .pv__title { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin: 0 0 4px; }
+    .pv__desc  { font-size: var(--font-size-md); color: var(--color-gray-700); margin: 0 0 32px; max-width: 720px; line-height: var(--line-height-lg); }
+    .pv__section { margin-bottom: 36px; }
+    .pv__section-title { font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); margin: 0 0 4px; }
+    .pv__section-sub { font-size: var(--font-size-sm); color: var(--color-gray-600); margin: 0 0 14px; line-height: var(--line-height-md); max-width: 720px; }
+    .pv__section-sub code { font-family: 'JetBrains Mono', monospace; font-size: 0.92em; background: var(--color-gray-100); padding: 1px 5px; border-radius: var(--radius-sm); color: var(--color-gray-800); }
+    .pv__section-sub em { font-style: italic; }
+    .pv__row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+      padding: 20px; background: var(--color-white);
+      border: 1px solid var(--color-gray-200); border-radius: var(--radius-md);
+    }
+    .pv__cell { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .pv__cell small { font-size: 11px; color: var(--color-gray-500); font-family: 'JetBrains Mono', monospace; }
+    .pv__row--dark { background: var(--color-gray-800); border-color: var(--color-gray-800); }
+    .pv__row--dark .pv__cell small { color: var(--color-gray-300); }
+    .pv__divider { border: none; border-top: 1px solid var(--color-gray-400); margin: 0 0 36px; }
+
+    /* Bloco de código (HTML/CSS/React) com tabs + copiar */
+    .pv__code-block { margin-top: 8px; border: 1px solid var(--color-gray-200); border-radius: var(--radius-md); overflow: hidden; background: var(--color-white); max-width: 920px; }
+    .pv__code-tabs { display: flex; border-bottom: 1px solid var(--color-gray-200); background: var(--color-gray-50); }
+    .pv__code-tab {
+      padding: 10px 16px; background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+      color: var(--color-gray-600); border-bottom: 2px solid transparent;
+    }
+    .pv__code-tab:hover { color: var(--color-gray-900); }
+    .pv__code-tab.is-active { color: var(--color-blue-400); border-bottom-color: var(--color-blue-400); }
+    .pv__code-body { position: relative; }
+    .pv__code-copy {
+      position: absolute; top: 12px; right: 12px;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 10px; background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-200); border-radius: var(--radius-sm);
+      font-family: inherit; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+      color: var(--color-gray-700); cursor: pointer;
+    }
+    .pv__code-copy:hover { background: var(--color-gray-200); }
+    .pv__code-copy .material-icons { font-size: 14px; }
+    .pv__code-pre {
+      margin: 0; padding: 20px; overflow-x: auto; max-height: 480px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px;
+      line-height: 1.6; color: var(--color-gray-800); background: var(--color-gray-50);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho: marca + nome do componente + última atualização + versão -->
+  <header class="pv__appbar">
+    <div class="pv__appbar__left">
+      <img class="pv__appbar__logo" src="https://marcoskip.github.io/infoprice-prototipos/assets/logo-principal.svg" alt="InfoPrice" />
+      <span class="pv__appbar__ds"><span class="pv__appbar__ds-info">Info</span><span class="pv__appbar__ds-design">Design</span></span>
+      <span class="pv__appbar__sep"></span>
+      <span class="pv__appbar__component">Badge</span>
+    </div>
+    <div class="pv__appbar__right">
+      <span class="pv__appbar__updated">Atualizado em 27/05/2026</span>
+      <span class="pv__appbar__version">v2.0.0</span>
+    </div>
+  </header>
+
+  <div class="pv__content">
+
+  <h1 class="pv__title">Badge</h1>
+  <p class="pv__desc">
+    Badge é usado para demostrar valor numérico, notificações ou status e pode
+    aparecer ou não próximo a outros componentes.
+  </p>
+
+  <!-- Última atualização (changelog do componente) -->
+  <section class="pv__changelog">
+    <h2 class="pv__changelog-title"><span class="material-icons">history</span>Última atualização</h2>
+
+    <!-- entrada mais recente (sempre visível) -->
+    <dl class="pv__changelog-grid">
+      <dt>Data</dt>
+      <dd>27/05/2026</dd>
+      <dt>Motivo</dt>
+      <dd>Correção de altura dos tamanhos para bater com o Figma.</dd>
+      <dt>Alteração</dt>
+      <dd>Ajuste do box model: alturas fixas por size (medium 20px · small 14px) com <code>box-sizing: border-box</code>. A altura automática não reproduzia o Figma (medium saía 18px, small 16px). Agora filled e ghost têm altura idêntica e pixel-exata.</dd>
+      <dt>Modificado por</dt>
+      <dd>Marcos Keller</dd>
+    </dl>
+
+    <!-- toggle do histórico -->
+    <button class="pv__changelog-toggle" type="button" aria-expanded="false" data-changelog-toggle>
+      <span class="material-icons">expand_more</span>
+      <span data-changelog-label>Ver atualizações anteriores</span>
+    </button>
+
+    <!-- histórico (entradas passadas; mais recente no topo) -->
+    <div class="pv__changelog-history" hidden data-changelog-history>
+      <div class="pv__changelog-entry">
+        <dl class="pv__changelog-grid">
+          <dt>Data</dt>
+          <dd>27/05/2026</dd>
+          <dt>Motivo</dt>
+          <dd>Criação inicial do componente no Design System 2.0.</dd>
+          <dt>Alteração</dt>
+          <dd>Implementação completa: themes (filled/ghost), variations (basic/complete), sizes (medium/small), cores semânticas e regras fixas (ícone sempre filled, tipografia travada em Bold/UPPERCASE).</dd>
+          <dt>Modificado por</dt>
+          <dd>Marcos Keller</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Themes ──────────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Themes</h2>
+    <p class="pv__section-sub">O componente possui dois estilos de aplicação: <code>filled</code> e <code>ghost</code>.</p>
+    <div class="pv__row">
+      <div class="pv__cell"><span class="badge">filled</span><small>filled</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost">ghost</span><small>ghost</small></div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── Variations (guarda-chuva) ───────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Variations</h2>
+    <p class="pv__section-sub">Badge possui duas variações principais: <code>basic</code> e <code>with-content</code>. As cores do badge podem ser alteradas conforme a necessidade na interface, porém deve ser respeitado nossas cores semânticas.</p>
+  </section>
+
+  <!-- ── Basic ───────────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Basic</h2>
+    <p class="pv__section-sub">Essa variação não possui conteúdo e tem apenas um único tamanho.</p>
+    <div class="pv__row">
+      <div class="pv__cell"><span class="badge badge--basic" role="status" aria-label="Nova atualização"></span><small>filled</small></div>
+      <div class="pv__cell"><span class="badge badge--basic badge--ghost" role="status" aria-label="Nova atualização"></span><small>ghost</small></div>
+    </div>
+  </section>
+
+  <!-- ── Complete ────────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Complete</h2>
+    <p class="pv__section-sub">Diferentemente do <em>basic</em>, essa variação deve sempre estar acompanhado de uma ou mais possibilidades de conteúdo: ícone, texto e/ou contador numérico.</p>
+    <div class="pv__row">
+      <div class="pv__cell">
+        <span class="badge">
+          <span class="badge__icon"><span class="material-icons">info</span></span>
+        </span>
+        <small>icon</small>
+      </div>
+      <div class="pv__cell"><span class="badge"><span class="badge__label">tag text</span></span><small>text</small></div>
+      <div class="pv__cell"><span class="badge"><span class="badge__counter">99</span></span><small>counter</small></div>
+      <div class="pv__cell">
+        <span class="badge">
+          <span class="badge__icon"><span class="material-icons">info</span></span>
+          <span class="badge__label">tag text</span>
+          <span class="badge__counter">99</span>
+        </span>
+        <small>icon + text + counter</small>
+      </div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── Sizes ───────────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Sizes</h2>
+    <p class="pv__section-sub">O badge, na variação with-content, possui dois tamanhos: <code>medium</code> e <code>small</code> sendo o tamanho <em>small</em> o utilizado com maior frequência.</p>
+    <div class="pv__row">
+      <div class="pv__cell"><span class="badge">medium</span><small>medium</small></div>
+      <div class="pv__cell"><span class="badge badge--small">small</span><small>small</small></div>
+    </div>
+  </section>
+
+  <!-- ── Cores semânticas ────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Cores semânticas</h2>
+    <p class="pv__section-sub">Respeitar a paleta semântica do DS. filled (acima) / ghost (abaixo).</p>
+    <div class="pv__row">
+      <div class="pv__cell"><span class="badge">info</span><small>(default)</small></div>
+      <div class="pv__cell"><span class="badge badge--success">success</span><small>--success</small></div>
+      <div class="pv__cell"><span class="badge badge--warning">warning</span><small>--warning</small></div>
+      <div class="pv__cell"><span class="badge badge--danger">danger</span><small>--danger</small></div>
+      <div class="pv__cell"><span class="badge badge--neutral">neutral</span><small>--neutral</small></div>
+    </div>
+    <div class="pv__row" style="margin-top:12px">
+      <div class="pv__cell"><span class="badge badge--ghost">info</span><small>(default)</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--success">success</span><small>--success</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--warning">warning</span><small>--warning</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--danger">danger</span><small>--danger</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--neutral">neutral</span><small>--neutral</small></div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── Código (HTML / CSS / React) ─────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Código</h2>
+    <p class="pv__section-sub">Markup canônico, CSS e React do componente — carregado direto dos arquivos-fonte da pasta (sempre sincronizado com o que está no DS).</p>
+    <div class="pv__code-block">
+      <div class="pv__code-tabs" role="tablist">
+        <button class="pv__code-tab is-active" type="button" role="tab" data-code-tab="html">HTML</button>
+        <button class="pv__code-tab" type="button" role="tab" data-code-tab="css">CSS</button>
+        <button class="pv__code-tab" type="button" role="tab" data-code-tab="react">React</button>
+      </div>
+      <div class="pv__code-body">
+        <button class="pv__code-copy" type="button" data-code-copy><span class="material-icons">content_copy</span> <span data-code-copy-label>Copiar</span></button>
+        <pre class="pv__code-pre"><code data-code-content>Carregando…</code></pre>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /.pv__content -->
+
+  <script>
+    // Toggle do histórico de atualizações do componente
+    (function () {
+      const btn = document.querySelector('[data-changelog-toggle]');
+      const hist = document.querySelector('[data-changelog-history]');
+      const label = document.querySelector('[data-changelog-label]');
+      if (!btn || !hist) return;
+      btn.addEventListener('click', () => {
+        const willOpen = hist.hidden;
+        hist.hidden = !willOpen;
+        btn.setAttribute('aria-expanded', String(willOpen));
+        label.textContent = willOpen ? 'Ocultar atualizações anteriores' : 'Ver atualizações anteriores';
+      });
+    })();
+
+    // Bloco de código — fetch dos arquivos-fonte, tabs e copiar
+    (function () {
+      const SOURCES = {
+        html: 'badge.snippet.html',
+        css: 'badge.css',
+        react: 'badge.react.tsx',
+      };
+      const cache = {};
+      const codeEl = document.querySelector('[data-code-content]');
+      const tabs = document.querySelectorAll('[data-code-tab]');
+      const copyBtn = document.querySelector('[data-code-copy]');
+      const copyLabel = document.querySelector('[data-code-copy-label]');
+      if (!codeEl || !tabs.length) return;
+      let current = 'html';
+
+      async function load(tab) {
+        current = tab;
+        if (cache[tab] == null) {
+          try {
+            const res = await fetch(SOURCES[tab]);
+            if (!res.ok) throw new Error(res.status);
+            cache[tab] = (await res.text()).replace(/\s+$/, '');
+          } catch (e) {
+            cache[tab] =
+              '/* Não foi possível carregar ' + SOURCES[tab] + ' */\n' +
+              '/* Sirva a pasta por um servidor (ex.: npx serve) — fetch não roda em file:// */';
+          }
+        }
+        codeEl.textContent = cache[tab];
+      }
+
+      tabs.forEach((t) => t.addEventListener('click', () => {
+        tabs.forEach((x) => x.classList.toggle('is-active', x === t));
+        load(t.dataset.codeTab);
+      }));
+
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(cache[current] || '');
+          copyLabel.textContent = 'Copiado!';
+          setTimeout(() => { copyLabel.textContent = 'Copiar'; }, 1500);
+        } catch (e) {
+          copyLabel.textContent = 'Falhou';
+          setTimeout(() => { copyLabel.textContent = 'Copiar'; }, 1500);
+        }
+      });
+
+      load('html');
+    })();
+  </script>
+
+</body>
+</html>

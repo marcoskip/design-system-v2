@@ -1,0 +1,155 @@
+/* ═══════════════════════════════════════════════════════════════
+   Checkbox — DS 2.0
+   Seleção múltipla em listas ou opção facultativa. Consome só tokens.
+   BEM: .checkbox / .checkbox__<el>
+
+   Eixos (Figma 3052:18872 + ClickUp):
+     value:  check-off (default) | check-on | check-half (indeterminado)
+     estado: default | hover | disable
+     variação: só caixa | caixa + label | caixa + label + texto complementar
+
+   Estado é controlado pelo <input> nativo (:checked, :indeterminate,
+   :disabled, :focus-visible) — sem JS de mais.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco — wrapper da caixa + conteúdo ───────────────────────── */
+.checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: var(--font-family-base);
+  color: var(--color-gray-900);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Input nativo — visualmente oculto, mas acessível ──────────── */
+.checkbox__input {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Caixa visual ──────────────────────────────────────────────── */
+.checkbox__box {
+  flex-shrink: 0;
+  position: relative;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;                /* alinha com baseline do label (line-height 20) */
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-400);
+  border-radius: 3px;             /* Figma — valor menor que --radius-sm (4px) */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+/* Glyph (check ✓ ou dash —) dentro da caixa ──────────────────
+   Implementado via SVG inline em mask-image → pixel-crisp em qualquer
+   tamanho, cor controlada por `background-color` (facilita o disabled).
+   Path e proporções do checkmark vindos do Figma (Material-style). */
+.checkbox__icon {
+  display: block;
+  width: 14px;                    /* área útil dentro da caixa 16×16 (1px borda) */
+  height: 14px;
+  background-color: var(--color-white);
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+  opacity: 0;                     /* invisível no estado off */
+}
+
+/* ── Estado: checked (on) ──────────────────────────────────── */
+.checkbox__input:checked + .checkbox__box {
+  background: var(--color-blue-400);
+  border-color: var(--color-blue-400);
+}
+.checkbox__input:checked + .checkbox__box .checkbox__icon {
+  opacity: 1;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 L6.5 11.5 L12.5 5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 L6.5 11.5 L12.5 5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* ── Estado: indeterminate (half) ──────────────────────────── */
+.checkbox__input:indeterminate + .checkbox__box {
+  background: var(--color-blue-400);
+  border-color: var(--color-blue-400);
+}
+.checkbox__input:indeterminate + .checkbox__box .checkbox__icon {
+  opacity: 1;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cline x1='4' y1='8' x2='12' y2='8' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cline x1='4' y1='8' x2='12' y2='8' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* ── Estado: hover (pseudo p/ uso real + .is-* p/ doc estática) ─── */
+.checkbox:hover .checkbox__box,
+.checkbox.is-hover .checkbox__box {
+  border-color: var(--color-blue-600);
+}
+.checkbox:hover .checkbox__input:checked + .checkbox__box,
+.checkbox:hover .checkbox__input:indeterminate + .checkbox__box,
+.checkbox.is-hover .checkbox__input:checked + .checkbox__box,
+.checkbox.is-hover .checkbox__input:indeterminate + .checkbox__box {
+  background: var(--color-blue-600);
+  border-color: var(--color-blue-600);
+}
+
+/* ── Estado: focus-visible (a11y de teclado) ──────────────── */
+.checkbox__input:focus-visible + .checkbox__box {
+  outline: 2px solid var(--color-blue-400);
+  outline-offset: 2px;
+}
+
+/* ── Estado: disabled ──────────────────────────────────────── */
+.checkbox:has(.checkbox__input:disabled),
+.checkbox.is-disabled {
+  cursor: not-allowed;
+}
+.checkbox__input:disabled + .checkbox__box,
+.checkbox.is-disabled .checkbox__box {
+  background: var(--color-gray-100);
+  border-color: var(--color-gray-500);
+}
+.checkbox__input:disabled:checked + .checkbox__box .checkbox__icon,
+.checkbox__input:disabled:indeterminate + .checkbox__box .checkbox__icon,
+.checkbox.is-disabled .checkbox__input:checked + .checkbox__box .checkbox__icon,
+.checkbox.is-disabled .checkbox__input:indeterminate + .checkbox__box .checkbox__icon {
+  background-color: var(--color-gray-500);
+}
+.checkbox__input:disabled ~ .checkbox__content,
+.checkbox.is-disabled .checkbox__content {
+  opacity: 0.4;
+}
+
+/* Conteúdo: label + texto complementar ─────────────────────── */
+.checkbox__content {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.checkbox__label {
+  font-size: 14px;                /* Figma — Open Sans 14/20 */
+  line-height: 20px;
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-900);
+}
+/* Quando o checkbox está marcado/indeterminado, o label fica SemiBold (Figma). */
+.checkbox__input:checked ~ .checkbox__content .checkbox__label,
+.checkbox__input:indeterminate ~ .checkbox__content .checkbox__label {
+  font-weight: var(--font-weight-semibold);
+}
+.checkbox__help {
+  font-size: 12px;                /* Figma — Open Sans 12/18 */
+  line-height: 18px;
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-600);
+}

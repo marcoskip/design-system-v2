@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InfoPrice — Design System 2.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+
+  <!-- Tokens do DS -->
+  <link rel="stylesheet" href="tokens.css" />
+
+  <!-- CSS dos componentes (cada um auto-contido) -->
+  <link rel="stylesheet" href="../components/basic/badge/badge.css" />
+  <link rel="stylesheet" href="../components/basic/primary-button/primary-button.css" />
+  <link rel="stylesheet" href="../components/basic/secondary-button/secondary-button.css" />
+  <link rel="stylesheet" href="../components/basic/checkbox/checkbox.css" />
+
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font-family-base); color: var(--color-gray-900); background: var(--color-gray-50); }
+
+    :root { --ds-nav-width: 260px; }
+
+    /* ── App bar ───────────────────────────────────────── */
+    .ds__appbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; padding: 0 24px; background: var(--color-white); border-bottom: 1px solid var(--color-gray-200); position: sticky; top: 0; z-index: 20; }
+    .ds__appbar__left, .ds__appbar__right { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
+    .ds__appbar__logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+    .ds__appbar__brand { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); letter-spacing: -0.2px; white-space: nowrap; }
+    .ds__appbar__brand-info { color: var(--color-gray-900); }
+    .ds__appbar__brand-design { color: var(--color-blue-400); }
+    .ds__appbar__sep { width: 1px; height: 22px; background: var(--color-gray-300); flex-shrink: 0; }
+    .ds__appbar__sub { font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); color: var(--color-gray-700); white-space: nowrap; }
+    .ds__appbar__version { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--color-blue-light-15, #e1eefd); color: var(--color-blue-700); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); white-space: nowrap; }
+
+    /* ── Layout: sidebar + main ────────────────────────── */
+    .ds__layout { display: grid; grid-template-columns: var(--ds-nav-width) 1fr; min-height: calc(100vh - 56px); }
+
+    /* ── Sidebar ───────────────────────────────────────── */
+    .ds__nav { position: sticky; top: 56px; align-self: start; width: var(--ds-nav-width); height: calc(100vh - 56px); background: var(--color-white); border-right: 1px solid var(--color-gray-200); padding: 20px 16px; overflow-y: auto; }
+    .ds__nav__search { position: relative; margin-bottom: 24px; }
+    .ds__nav__search-input { width: 100%; padding: 8px 12px 8px 34px; font-family: inherit; font-size: var(--font-size-sm); color: var(--color-gray-900); background: var(--color-gray-50); border: 1px solid var(--color-gray-200); border-radius: var(--radius-sm); outline: none; transition: border-color 150ms ease, background 150ms ease; }
+    .ds__nav__search-input::placeholder { color: var(--color-gray-500); }
+    .ds__nav__search-input:focus { border-color: var(--color-blue-400); background: var(--color-white); }
+    .ds__nav__search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--color-gray-500); font-size: 18px; pointer-events: none; }
+    .ds__nav__search-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); padding: 4px; background: none; border: none; cursor: pointer; color: var(--color-gray-500); display: none; align-items: center; justify-content: center; border-radius: var(--radius-sm); }
+    .ds__nav__search-clear:hover { color: var(--color-gray-900); background: var(--color-gray-100); }
+    .ds__nav__search-clear .material-icons-outlined { font-size: 16px; }
+    .ds__nav__search.is-filled .ds__nav__search-clear { display: inline-flex; }
+
+    .ds__nav__group { margin-bottom: 18px; }
+    .ds__nav__group-title { font-size: 11px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-gray-500); margin: 0 0 8px; padding: 0 8px; }
+    .ds__nav__link { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 7px 8px; border-radius: var(--radius-sm); text-decoration: none; color: var(--color-gray-800); font-size: var(--font-size-sm); font-weight: var(--font-weight-regular); transition: background 120ms ease, color 120ms ease; }
+    .ds__nav__link:hover { background: var(--color-gray-50); color: var(--color-gray-900); }
+    .ds__nav__link.is-active { background: var(--color-blue-light-5, #f5f9fe); color: var(--color-blue-600); font-weight: var(--font-weight-semibold); }
+    .ds__nav__link__count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--color-gray-500); }
+    .ds__nav__empty { padding: 12px 8px; font-size: var(--font-size-sm); color: var(--color-gray-500); font-style: italic; }
+    .ds__nav__empty[hidden] { display: none; }
+
+    /* ── Main ──────────────────────────────────────────── */
+    .ds__main { min-width: 0; }
+    .ds__hero { padding: 48px 48px 24px; max-width: 1100px; }
+    .ds__hero__eyebrow { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 1px; color: var(--color-blue-400); margin: 0 0 8px; }
+    .ds__hero__title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); margin: 0 0 12px; letter-spacing: -0.5px; }
+    .ds__hero__subtitle { font-size: var(--font-size-lg); color: var(--color-gray-700); margin: 0 0 24px; max-width: 720px; line-height: var(--line-height-lg); }
+    .ds__hero__meta { display: flex; gap: 24px; flex-wrap: wrap; font-size: var(--font-size-sm); color: var(--color-gray-600); }
+    .ds__hero__meta strong { color: var(--color-gray-900); font-weight: var(--font-weight-semibold); }
+
+    .ds__section { padding: 24px 48px 48px; max-width: 1100px; }
+    .ds__section__title { display: flex; align-items: baseline; gap: 12px; font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin: 0 0 4px; scroll-margin-top: 72px; }
+    .ds__section__title__count { font-size: var(--font-size-sm); font-weight: var(--font-weight-regular); color: var(--color-gray-500); }
+    .ds__section__subtitle { font-size: var(--font-size-md); color: var(--color-gray-600); margin: 0 0 28px; }
+
+    /* ── Grid de cards ─────────────────────────────────── */
+    .ds__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+
+    .ds__card { display: flex; flex-direction: column; background: var(--color-white); border: 1px solid var(--color-gray-200); border-radius: var(--radius-md); overflow: hidden; transition: box-shadow 180ms ease, border-color 180ms ease; scroll-margin-top: 80px; }
+    .ds__card[hidden] { display: none; }
+    .ds__card:hover { box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); border-color: var(--color-blue-light-45, #b9d7fa); }
+
+    .ds__card__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--color-gray-100); }
+    .ds__card__name { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin: 0; }
+    .ds__card__version { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--color-blue-light-15, #e1eefd); color: var(--color-blue-700); font-size: 10px; font-weight: var(--font-weight-bold); letter-spacing: 0.4px; }
+
+    .ds__card__preview { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 140px; padding: 28px 20px; background: var(--color-gray-50); }
+    .ds__preview-row { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+    .ds__card__body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .ds__card__desc { font-size: var(--font-size-sm); color: var(--color-gray-700); margin: 0; line-height: var(--line-height-md); }
+    .ds__card__meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11px; color: var(--color-gray-500); font-family: 'JetBrains Mono', monospace; }
+    .ds__card__meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .ds__card__meta .material-icons-outlined { font-size: 14px; }
+
+    .ds__card__cta { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 4px; padding: 8px 12px; border-radius: var(--radius-sm); background: var(--color-blue-400); color: var(--color-white); text-decoration: none; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); transition: background 180ms ease; }
+    .ds__card__cta:hover { background: var(--color-blue-600); }
+    .ds__card__cta .material-icons-outlined { font-size: 16px; }
+
+    .ds__no-results { display: none; padding: 48px 24px; text-align: center; background: var(--color-white); border: 1px dashed var(--color-gray-300); border-radius: var(--radius-md); color: var(--color-gray-600); }
+    .ds__no-results.is-visible { display: block; }
+    .ds__no-results .material-icons-outlined { font-size: 32px; color: var(--color-gray-400); margin-bottom: 8px; }
+    .ds__no-results strong { display: block; font-size: var(--font-size-md); color: var(--color-gray-900); margin-bottom: 4px; }
+
+    /* ── Footer ────────────────────────────────────────── */
+    .ds__footer { padding: 24px 48px 48px; max-width: 1100px; font-size: var(--font-size-sm); color: var(--color-gray-600); border-top: 1px solid var(--color-gray-200); margin-top: 24px; }
+    .ds__footer a { color: var(--color-blue-400); text-decoration: none; font-weight: var(--font-weight-semibold); }
+    .ds__footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header class="ds__appbar">
+    <div class="ds__appbar__left">
+      <img class="ds__appbar__logo" src="https://marcoskip.github.io/infoprice-prototipos/assets/logo-principal.svg" alt="InfoPrice" />
+      <span class="ds__appbar__brand"><span class="ds__appbar__brand-info">Info</span><span class="ds__appbar__brand-design">Design</span></span>
+      <span class="ds__appbar__sep"></span>
+      <span class="ds__appbar__sub">Catálogo de componentes</span>
+    </div>
+    <div class="ds__appbar__right">
+      <span class="ds__appbar__version">DS 2.0</span>
+    </div>
+  </header>
+
+  <div class="ds__layout">
+
+    <!-- ── Sidebar ─────────────────────────────────── -->
+    <aside class="ds__nav">
+      <div class="ds__nav__search" data-search-wrapper>
+        <span class="material-icons-outlined ds__nav__search-icon">search</span>
+        <input type="text" class="ds__nav__search-input" placeholder="Buscar componente..." data-search-input aria-label="Buscar componente" />
+        <button class="ds__nav__search-clear" type="button" data-search-clear aria-label="Limpar busca">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="ds__nav__group" data-nav-group>
+        <p class="ds__nav__group-title">Componentes básicos</p>
+        <a class="ds__nav__link" href="#card-badge" data-nav-link data-target="badge">
+          Badge
+          <span class="ds__nav__link__count">v2.0.0</span>
+        </a>
+        <a class="ds__nav__link" href="#card-primary-button" data-nav-link data-target="primary-button">
+          Primary Button
+          <span class="ds__nav__link__count">v2.0.0</span>
+        </a>
+        <a class="ds__nav__link" href="#card-secondary-button" data-nav-link data-target="secondary-button">
+          Secondary Button
+          <span class="ds__nav__link__count">v2.0.0</span>
+        </a>
+        <a class="ds__nav__link" href="#card-checkbox" data-nav-link data-target="checkbox">
+          Checkbox
+          <span class="ds__nav__link__count">v2.0.0</span>
+        </a>
+      </div>
+
+      <p class="ds__nav__empty" hidden data-nav-empty>Nenhum componente.</p>
+    </aside>
+
+    <!-- ── Main ────────────────────────────────────── -->
+    <main class="ds__main">
+
+      <section class="ds__hero">
+        <p class="ds__hero__eyebrow">Design System 2.0</p>
+        <h1 class="ds__hero__title">InfoPrice — Design System</h1>
+        <p class="ds__hero__subtitle">
+          Biblioteca viva dos componentes da InfoPrice. Cada componente vive em uma
+          pasta própria com 5 arquivos (manual, showcase, CSS, React, snippet),
+          consome apenas tokens do design system e tem changelog próprio.
+        </p>
+        <div class="ds__hero__meta">
+          <span><strong>4</strong> componentes implementados</span>
+          <span><strong>Padrão:</strong> per-component · 5 arquivos</span>
+          <span><strong>Última atualização:</strong> 28/05/2026</span>
+        </div>
+      </section>
+
+      <section class="ds__section">
+        <h2 class="ds__section__title">
+          Componentes básicos
+          <span class="ds__section__title__count" data-count-label>4 componentes</span>
+        </h2>
+        <p class="ds__section__subtitle">Clique em "Ver documentação" para abrir o showcase completo do componente.</p>
+
+        <div class="ds__grid" data-grid>
+
+          <!-- ── Badge ────────────────────────────────────── -->
+          <article class="ds__card" id="card-badge" data-card data-name="badge" data-keywords="badge notificacao status pill chip">
+            <div class="ds__card__head">
+              <h3 class="ds__card__name">Badge</h3>
+              <span class="ds__card__version">v2.0.0</span>
+            </div>
+            <div class="ds__card__preview">
+              <div class="ds__preview-row">
+                <span class="badge"><span class="badge__label">Badge</span></span>
+                <span class="badge badge--success"><span class="badge__label">Success</span></span>
+                <span class="badge badge--warning"><span class="badge__label">Warning</span></span>
+                <span class="badge badge--danger"><span class="badge__label">Danger</span></span>
+              </div>
+              <div class="ds__preview-row">
+                <span class="badge badge--ghost"><span class="badge__label">Ghost</span></span>
+                <span class="badge badge--small"><span class="badge__label">Small</span></span>
+                <span class="badge badge--basic" aria-label="Notificação"></span>
+              </div>
+            </div>
+            <div class="ds__card__body">
+              <p class="ds__card__desc">
+                Demonstra valor numérico, notificação ou status. Themes filled/ghost, sizes medium/small, cores semânticas (success/warning/danger/neutral) e variante basic (dot).
+              </p>
+              <div class="ds__card__meta">
+                <span><span class="material-icons-outlined">history</span>28/05/2026</span>
+                <span><span class="material-icons-outlined">folder</span>basic/badge</span>
+              </div>
+              <a class="ds__card__cta" href="../components/basic/badge/badge.html">
+                Ver documentação
+                <span class="material-icons-outlined">arrow_forward</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- ── Primary Button ───────────────────────────── -->
+          <article class="ds__card" id="card-primary-button" data-card data-name="primary-button" data-keywords="primary button botao acao">
+            <div class="ds__card__head">
+              <h3 class="ds__card__name">Primary Button</h3>
+              <span class="ds__card__version">v2.0.0</span>
+            </div>
+            <div class="ds__card__preview">
+              <div class="ds__preview-row">
+                <button type="button" class="btn-primary"><span class="btn-primary__label">Filled</span></button>
+                <button type="button" class="btn-primary btn-primary--ghost"><span class="btn-primary__label">Ghost</span></button>
+              </div>
+              <div class="ds__preview-row">
+                <button type="button" class="btn-primary btn-primary--small">
+                  <span class="btn-primary__icon"><span class="material-icons">file_download</span></span>
+                  <span class="btn-primary__label">Small + ícone</span>
+                </button>
+                <button type="button" class="btn-primary btn-primary--xsmall" disabled><span class="btn-primary__label">Disabled</span></button>
+              </div>
+            </div>
+            <div class="ds__card__body">
+              <p class="ds__card__desc">
+                Botão principal para ações/decisões importantes. Themes filled/ghost, 4 sizes (large/medium/small/xsmall), estados completos com hover preenchido e transição suave.
+              </p>
+              <div class="ds__card__meta">
+                <span><span class="material-icons-outlined">history</span>27/05/2026</span>
+                <span><span class="material-icons-outlined">folder</span>basic/primary-button</span>
+              </div>
+              <a class="ds__card__cta" href="../components/basic/primary-button/primary-button.html">
+                Ver documentação
+                <span class="material-icons-outlined">arrow_forward</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- ── Secondary Button ─────────────────────────── -->
+          <article class="ds__card" id="card-secondary-button" data-card data-name="secondary-button" data-keywords="secondary button botao acao secundaria filtro select dropdown red white">
+            <div class="ds__card__head">
+              <h3 class="ds__card__name">Secondary Button</h3>
+              <span class="ds__card__version">v2.0.0</span>
+            </div>
+            <div class="ds__card__preview">
+              <div class="ds__preview-row">
+                <button type="button" class="btn-secondary btn-secondary--small">
+                  <span class="btn-secondary__icon"><span class="material-icons">add</span></span>
+                  <span class="btn-secondary__label">Blue</span>
+                </button>
+                <button type="button" class="btn-secondary btn-secondary--filled-gray btn-secondary--small">
+                  <span class="btn-secondary__icon"><span class="material-icons">add</span></span>
+                  <span class="btn-secondary__label">Gray</span>
+                </button>
+                <button type="button" class="btn-secondary btn-secondary--filled-red btn-secondary--small">
+                  <span class="btn-secondary__icon"><span class="material-icons">add</span></span>
+                  <span class="btn-secondary__label">Red</span>
+                </button>
+                <button type="button" class="btn-secondary btn-secondary--white btn-secondary--small">
+                  <span class="btn-secondary__icon"><span class="material-icons">add</span></span>
+                  <span class="btn-secondary__label">White</span>
+                </button>
+              </div>
+              <div class="ds__preview-row">
+                <button type="button" class="btn-secondary btn-secondary--small" aria-haspopup="true">
+                  <span class="btn-secondary__label">Filtrar por</span>
+                  <span class="btn-secondary__select"><span class="material-icons">arrow_drop_down</span></span>
+                </button>
+                <button type="button" class="btn-secondary btn-secondary--filled-gray btn-secondary--small" aria-label="Adicionar">
+                  <span class="btn-secondary__icon"><span class="material-icons">add</span></span>
+                </button>
+              </div>
+            </div>
+            <div class="ds__card__body">
+              <p class="ds__card__desc">
+                Botão secundário para ações não-decisórias. 4 themes (filled-blue, filled-gray 2-tone, filled-red, white), 4 sizes e 5 variações (no-icon, icon+content, icon-only, icon+select, content+select).
+              </p>
+              <div class="ds__card__meta">
+                <span><span class="material-icons-outlined">history</span>28/05/2026</span>
+                <span><span class="material-icons-outlined">folder</span>basic/secondary-button</span>
+              </div>
+              <a class="ds__card__cta" href="../components/basic/secondary-button/secondary-button.html">
+                Ver documentação
+                <span class="material-icons-outlined">arrow_forward</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- ── Checkbox ─────────────────────────────────── -->
+          <article class="ds__card" id="card-checkbox" data-card data-name="checkbox" data-keywords="checkbox check selecao multipla input form">
+            <div class="ds__card__head">
+              <h3 class="ds__card__name">Checkbox</h3>
+              <span class="ds__card__version">v2.0.0</span>
+            </div>
+            <div class="ds__card__preview">
+              <div class="ds__preview-row" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                <label class="checkbox">
+                  <input type="checkbox" class="checkbox__input" />
+                  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+                  <span class="checkbox__content"><span class="checkbox__label">Check-off</span></span>
+                </label>
+                <label class="checkbox">
+                  <input type="checkbox" class="checkbox__input" checked />
+                  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+                  <span class="checkbox__content"><span class="checkbox__label">Check-on</span></span>
+                </label>
+                <label class="checkbox">
+                  <input type="checkbox" class="checkbox__input" data-indeterminate />
+                  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+                  <span class="checkbox__content"><span class="checkbox__label">Check-half</span></span>
+                </label>
+              </div>
+            </div>
+            <div class="ds__card__body">
+              <p class="ds__card__desc">
+                Permite seleção de várias opções ou de opção facultativa. 3 valores (off/on/half), 3 variações (só caixa, +label, +label+texto complementar), estados default/hover/disable.
+              </p>
+              <div class="ds__card__meta">
+                <span><span class="material-icons-outlined">history</span>28/05/2026</span>
+                <span><span class="material-icons-outlined">folder</span>basic/checkbox</span>
+              </div>
+              <a class="ds__card__cta" href="../components/basic/checkbox/checkbox.html">
+                Ver documentação
+                <span class="material-icons-outlined">arrow_forward</span>
+              </a>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="ds__no-results" data-no-results>
+          <span class="material-icons-outlined">search_off</span>
+          <strong>Nenhum componente encontrado</strong>
+          Tente outro termo de busca.
+        </div>
+      </section>
+
+      <footer class="ds__footer">
+        InfoPrice — Design System 2.0 · <a href="https://github.com/InfoPrice/produto-ux/tree/master/design-system" target="_blank">repo</a> · <a href="https://www.figma.com/design/qXRoOz0cCzAX4WgOz7fAmJ/Design-System" target="_blank">arquivo Figma</a>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    // Aplica indeterminate em todos os checkboxes marcados com data-indeterminate
+    document.querySelectorAll('.checkbox__input[data-indeterminate]').forEach((el) => {
+      el.indeterminate = true;
+    });
+
+    // ── Busca: filtra sidebar links + cards ─────────────
+    (function () {
+      const input = document.querySelector('[data-search-input]');
+      const clearBtn = document.querySelector('[data-search-clear]');
+      const wrapper = document.querySelector('[data-search-wrapper]');
+      const cards = document.querySelectorAll('[data-card]');
+      const navLinks = document.querySelectorAll('[data-nav-link]');
+      const navEmpty = document.querySelector('[data-nav-empty]');
+      const noResults = document.querySelector('[data-no-results]');
+      const countLabel = document.querySelector('[data-count-label]');
+
+      function applyFilter(term) {
+        const q = term.trim().toLowerCase();
+        wrapper.classList.toggle('is-filled', q.length > 0);
+
+        let visibleCount = 0;
+        cards.forEach((card) => {
+          const name = (card.dataset.name || '').toLowerCase();
+          const kw = (card.dataset.keywords || '').toLowerCase();
+          const match = q === '' || name.includes(q) || kw.includes(q);
+          card.hidden = !match;
+          if (match) visibleCount++;
+        });
+
+        let navVisibleCount = 0;
+        navLinks.forEach((link) => {
+          const target = (link.dataset.target || '').toLowerCase();
+          const text = link.textContent.toLowerCase();
+          const match = q === '' || target.includes(q) || text.includes(q);
+          link.hidden = !match;
+          if (match) navVisibleCount++;
+        });
+
+        navEmpty.hidden = navVisibleCount > 0;
+        noResults.classList.toggle('is-visible', visibleCount === 0);
+        countLabel.textContent = visibleCount === 1 ? '1 componente' : visibleCount + ' componentes';
+      }
+
+      input.addEventListener('input', (e) => applyFilter(e.target.value));
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
+        applyFilter('');
+        input.focus();
+      });
+
+      // Atalho /: foca o campo de busca
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== input) {
+          e.preventDefault();
+          input.focus();
+        }
+        if (e.key === 'Escape' && document.activeElement === input) {
+          input.value = '';
+          applyFilter('');
+          input.blur();
+        }
+      });
+    })();
+
+    // ── Sidebar: highlight do link ativo no scroll ──────
+    (function () {
+      const links = document.querySelectorAll('[data-nav-link]');
+      const cards = document.querySelectorAll('[data-card]');
+      if (!('IntersectionObserver' in window)) return;
+      const map = new Map();
+      links.forEach((l) => map.set(l.dataset.target, l));
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            links.forEach((l) => l.classList.remove('is-active'));
+            const link = map.get(entry.target.dataset.name);
+            if (link) link.classList.add('is-active');
+          }
+        });
+      }, { rootMargin: '-80px 0px -55% 0px' });
+      cards.forEach((c) => io.observe(c));
+    })();
+  </script>
+
+</body>
+</html>

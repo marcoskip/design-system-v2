@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkbox — DS 2.0 · InfoPrice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../dist/tokens.css" />
+  <link rel="stylesheet" href="checkbox.css" />
+  <style>
+    /* ↓↓↓ chrome da página de preview — NÃO faz parte do componente ↓↓↓ */
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font-family-base); color: var(--color-gray-900); background: var(--color-gray-50); }
+
+    .pv__appbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; padding: 0 24px; background: var(--color-white); border-bottom: 1px solid var(--color-gray-200); position: sticky; top: 0; z-index: 10; }
+    .pv__appbar__left, .pv__appbar__right { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
+    .pv__appbar__logo { height: 22px; width: auto; display: block; flex-shrink: 0; }
+    .pv__appbar__ds { font-size: var(--font-size-md); font-weight: var(--font-weight-bold); letter-spacing: -0.2px; white-space: nowrap; }
+    .pv__appbar__ds-info { color: var(--color-gray-900); }
+    .pv__appbar__ds-design { color: var(--color-blue-400); }
+    .pv__appbar__sep { width: 1px; height: 22px; background: var(--color-gray-300); flex-shrink: 0; }
+    .pv__appbar__component { font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); color: var(--color-gray-700); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pv__appbar__updated { font-size: var(--font-size-xs); color: var(--color-gray-600); white-space: nowrap; }
+    .pv__appbar__version { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--color-blue-light-15, #e1eefd); color: var(--color-blue-700); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); white-space: nowrap; }
+    .pv__content { padding: 40px; }
+
+    .pv__title { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin: 0 0 4px; }
+    .pv__desc  { font-size: var(--font-size-md); color: var(--color-gray-700); margin: 0 0 32px; max-width: 720px; line-height: var(--line-height-lg); }
+    .pv__section { margin-bottom: 36px; }
+    .pv__section-title { font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); margin: 0 0 4px; }
+    .pv__section-sub { font-size: var(--font-size-sm); color: var(--color-gray-600); margin: 0 0 14px; line-height: var(--line-height-md); max-width: 720px; }
+    .pv__section-sub code { font-family: 'JetBrains Mono', monospace; font-size: 0.92em; background: var(--color-gray-100); padding: 1px 5px; border-radius: var(--radius-sm); color: var(--color-gray-800); }
+    .pv__subhead { font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); color: var(--color-gray-800); margin: 18px 0 10px; }
+
+    .pv__row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 32px; padding: 20px; background: var(--color-white); border: 1px solid var(--color-gray-200); border-radius: var(--radius-md); }
+    .pv__cell { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .pv__cell small { font-size: 11px; color: var(--color-gray-500); font-family: 'JetBrains Mono', monospace; }
+    .pv__divider { border: none; border-top: 1px solid var(--color-gray-400); margin: 0 0 36px; }
+
+    /* changelog */
+    .pv__changelog { background: var(--color-blue-light-5, #f5f9fe); border: 1px solid var(--color-blue-light-20, #d7e8fc); border-radius: var(--radius-md); padding: 16px 20px; margin: 0 0 36px; max-width: 720px; }
+    .pv__changelog-title { display: flex; align-items: center; gap: 6px; font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.4px; color: var(--color-gray-700); margin: 0 0 12px; }
+    .pv__changelog-title .material-icons { font-size: 16px; color: var(--color-blue-400); }
+    .pv__changelog-grid { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 0; }
+    .pv__changelog-grid dt { font-size: 11px; font-weight: var(--font-weight-bold); text-transform: uppercase; letter-spacing: 0.3px; color: var(--color-gray-600); align-self: start; padding-top: 1px; }
+    .pv__changelog-grid dd { margin: 0; font-size: var(--font-size-md); color: var(--color-gray-900); line-height: var(--line-height-md); }
+    .pv__changelog-toggle { display: inline-flex; align-items: center; gap: 4px; margin-top: 16px; padding: 0; background: none; border: none; cursor: pointer; font-family: inherit; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--color-blue-400); }
+    .pv__changelog-toggle .material-icons { font-size: 18px; transition: transform 150ms ease; }
+    .pv__changelog-toggle[aria-expanded="true"] .material-icons { transform: rotate(180deg); }
+    .pv__changelog-history { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--color-gray-300); }
+    .pv__changelog-history[hidden] { display: none; }
+    .pv__changelog-entry { margin-bottom: 20px; }
+    .pv__changelog-entry:last-child { margin-bottom: 0; }
+    .pv__changelog-empty { margin: 0; font-size: var(--font-size-sm); color: var(--color-gray-600); font-style: italic; }
+    .pv__changelog-grid dd code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: var(--color-white); padding: 1px 4px; border-radius: var(--radius-sm); }
+
+    /* bloco de código */
+    .pv__code-block { margin-top: 8px; border: 1px solid var(--color-gray-200); border-radius: var(--radius-md); overflow: hidden; background: var(--color-white); max-width: 920px; }
+    .pv__code-tabs { display: flex; border-bottom: 1px solid var(--color-gray-200); background: var(--color-gray-50); }
+    .pv__code-tab { padding: 10px 16px; background: none; border: none; cursor: pointer; font-family: inherit; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--color-gray-600); border-bottom: 2px solid transparent; }
+    .pv__code-tab:hover { color: var(--color-gray-900); }
+    .pv__code-tab.is-active { color: var(--color-blue-400); border-bottom-color: var(--color-blue-400); }
+    .pv__code-body { position: relative; }
+    .pv__code-copy { position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; background: var(--color-gray-100); border: 1px solid var(--color-gray-200); border-radius: var(--radius-sm); font-family: inherit; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-gray-700); cursor: pointer; }
+    .pv__code-copy:hover { background: var(--color-gray-200); }
+    .pv__code-copy .material-icons { font-size: 14px; }
+    .pv__code-pre { margin: 0; padding: 20px; overflow-x: auto; max-height: 480px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.6; color: var(--color-gray-800); background: var(--color-gray-50); }
+  </style>
+</head>
+<body>
+
+  <header class="pv__appbar">
+    <div class="pv__appbar__left">
+      <img class="pv__appbar__logo" src="https://marcoskip.github.io/infoprice-prototipos/assets/logo-principal.svg" alt="InfoPrice" />
+      <span class="pv__appbar__ds"><span class="pv__appbar__ds-info">Info</span><span class="pv__appbar__ds-design">Design</span></span>
+      <span class="pv__appbar__sep"></span>
+      <span class="pv__appbar__component">Checkbox</span>
+    </div>
+    <div class="pv__appbar__right">
+      <span class="pv__appbar__updated">Atualizado em 28/05/2026</span>
+      <span class="pv__appbar__version">v2.0.0</span>
+    </div>
+  </header>
+
+  <div class="pv__content">
+
+  <h1 class="pv__title">Checkbox</h1>
+  <p class="pv__desc">
+    O Checkbox é usado para permitir que o usuário selecione várias opções em uma
+    lista ou então que ele selecione uma opção facultativa. Não deve ser usado em
+    alternativas únicas e/ou obrigatórias.
+  </p>
+
+  <!-- Última atualização (changelog do componente) -->
+  <section class="pv__changelog">
+    <h2 class="pv__changelog-title"><span class="material-icons">history</span>Última atualização</h2>
+    <dl class="pv__changelog-grid">
+      <dt>Data</dt>
+      <dd>28/05/2026</dd>
+      <dt>Motivo</dt>
+      <dd>Correção do glyph do check (check-on e check-half) para bater com o Figma.</dd>
+      <dt>Alteração</dt>
+      <dd>Substituição do check desenhado via CSS rotacionado (<code>border-right</code> + <code>border-bottom</code> + <code>rotate(45deg)</code>) por SVG inline em <code>mask-image</code>. O traçado anterior gerava um "L invertido" simétrico; o novo segue as proporções clássicas do Material (traço curto + traço longo, cap arredondado). O <code>check-half</code> também ganhou cap arredondado. Cor segue controlada por <code>background-color</code> (facilita o estado disabled).</dd>
+      <dt>Modificado por</dt>
+      <dd>Marcos Keller</dd>
+    </dl>
+    <button class="pv__changelog-toggle" type="button" aria-expanded="false" data-changelog-toggle>
+      <span class="material-icons">expand_more</span>
+      <span data-changelog-label>Ver atualizações anteriores</span>
+    </button>
+    <div class="pv__changelog-history" hidden data-changelog-history>
+      <div class="pv__changelog-entry">
+        <dl class="pv__changelog-grid">
+          <dt>Data</dt>
+          <dd>28/05/2026</dd>
+          <dt>Motivo</dt>
+          <dd>Criação inicial do componente no Design System 2.0.</dd>
+          <dt>Alteração</dt>
+          <dd>Implementação completa: três valores (<code>check-off</code> / <code>check-on</code> / <code>check-half</code>), variações (só caixa, caixa + label, caixa + label + texto complementar), estados (<code>default</code> / <code>hover</code> / <code>disable</code>) e suporte nativo a <code>:focus-visible</code> para a11y de teclado.</dd>
+          <dt>Modificado por</dt>
+          <dd>Marcos Keller</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── Themes ──────────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Themes</h2>
+    <p class="pv__section-sub">O Checkbox possui um único estilo de aplicação.</p>
+    <div class="pv__row">
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Checkbox</span></span>
+        </label>
+        <small>checkbox</small>
+      </div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── Value ───────────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Value</h2>
+    <p class="pv__section-sub">O Checkbox possui três valores: <code>check-off</code> para não selecionado, <code>check-on</code> para selecionado, e <code>check-half</code> para indeterminado.</p>
+    <div class="pv__row">
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-off</span></span>
+        </label>
+        <small>check-off</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" checked />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-on</span></span>
+        </label>
+        <small>check-on</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" data-indeterminate />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-half</span></span>
+        </label>
+        <small>check-half</small>
+      </div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── Variations ──────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Variations</h2>
+    <p class="pv__section-sub">O Checkbox pode ser usado de três formas: somente a caixa de seleção, uso conjunto de caixa de seleção e label e uso conjunto de caixa de seleção, label e texto complementar.</p>
+    <p class="pv__section-sub">A label pode ser acompanhado de ícone e badge.</p>
+    <div class="pv__row">
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+        </label>
+        <small>caixa de seleção</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content">
+            <span class="checkbox__label">Insert a text to this element</span>
+          </span>
+        </label>
+        <small>label</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content">
+            <span class="checkbox__label">Insert a text to this element</span>
+            <span class="checkbox__help">Insert a text to this complementary element</span>
+          </span>
+        </label>
+        <small>label + texto complementar</small>
+      </div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── States ──────────────────────────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">States</h2>
+    <p class="pv__section-sub">Cada botão tem os seguintes estados: <code>default</code>, <code>hover</code> e <code>disable</code>.</p>
+
+    <div class="pv__subhead">Default</div>
+    <div class="pv__row">
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-off</span></span>
+        </label>
+        <small>check-off · default</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" checked />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-on</span></span>
+        </label>
+        <small>check-on · default</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" data-indeterminate />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-half</span></span>
+        </label>
+        <small>check-half · default</small>
+      </div>
+    </div>
+
+    <div class="pv__subhead">Hover</div>
+    <div class="pv__row">
+      <div class="pv__cell">
+        <label class="checkbox is-hover">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-off</span></span>
+        </label>
+        <small>check-off · hover</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox is-hover">
+          <input type="checkbox" class="checkbox__input" checked />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-on</span></span>
+        </label>
+        <small>check-on · hover</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox is-hover">
+          <input type="checkbox" class="checkbox__input" data-indeterminate />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-half</span></span>
+        </label>
+        <small>check-half · hover</small>
+      </div>
+    </div>
+
+    <div class="pv__subhead">Disable</div>
+    <div class="pv__row">
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" disabled />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-off</span></span>
+        </label>
+        <small>check-off · disable</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" checked disabled />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-on</span></span>
+        </label>
+        <small>check-on · disable</small>
+      </div>
+      <div class="pv__cell">
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" disabled data-indeterminate />
+          <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+          <span class="checkbox__content"><span class="checkbox__label">Check-half</span></span>
+        </label>
+        <small>check-half · disable</small>
+      </div>
+    </div>
+  </section>
+
+  <hr class="pv__divider" />
+
+  <!-- ── Código (HTML / CSS / React) ─────────────────────── -->
+  <section class="pv__section">
+    <h2 class="pv__section-title">Código</h2>
+    <p class="pv__section-sub">Markup canônico, CSS e React — carregado direto dos arquivos-fonte da pasta (sempre sincronizado com o DS).</p>
+    <div class="pv__code-block">
+      <div class="pv__code-tabs" role="tablist">
+        <button class="pv__code-tab is-active" type="button" role="tab" data-code-tab="html">HTML</button>
+        <button class="pv__code-tab" type="button" role="tab" data-code-tab="css">CSS</button>
+        <button class="pv__code-tab" type="button" role="tab" data-code-tab="react">React</button>
+      </div>
+      <div class="pv__code-body">
+        <button class="pv__code-copy" type="button" data-code-copy><span class="material-icons">content_copy</span> <span data-code-copy-label>Copiar</span></button>
+        <pre class="pv__code-pre"><code data-code-content>Carregando…</code></pre>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /.pv__content -->
+
+  <script>
+    // Aplica `indeterminate` em todos os checkboxes com data-indeterminate
+    document.querySelectorAll('.checkbox__input[data-indeterminate]').forEach((el) => {
+      el.indeterminate = true;
+    });
+
+    // Toggle do histórico de atualizações
+    (function () {
+      const btn = document.querySelector('[data-changelog-toggle]');
+      const hist = document.querySelector('[data-changelog-history]');
+      const label = document.querySelector('[data-changelog-label]');
+      if (!btn || !hist) return;
+      btn.addEventListener('click', () => {
+        const willOpen = hist.hidden;
+        hist.hidden = !willOpen;
+        btn.setAttribute('aria-expanded', String(willOpen));
+        label.textContent = willOpen ? 'Ocultar atualizações anteriores' : 'Ver atualizações anteriores';
+      });
+    })();
+
+    // Bloco de código — fetch dos arquivos-fonte, tabs e copiar
+    (function () {
+      const SOURCES = {
+        html: 'checkbox.snippet.html',
+        css: 'checkbox.css',
+        react: 'checkbox.react.tsx',
+      };
+      const cache = {};
+      const codeEl = document.querySelector('[data-code-content]');
+      const tabs = document.querySelectorAll('[data-code-tab]');
+      const copyBtn = document.querySelector('[data-code-copy]');
+      const copyLabel = document.querySelector('[data-code-copy-label]');
+      if (!codeEl || !tabs.length) return;
+      let current = 'html';
+
+      async function load(tab) {
+        current = tab;
+        if (cache[tab] == null) {
+          try {
+            const res = await fetch(SOURCES[tab]);
+            if (!res.ok) throw new Error(res.status);
+            cache[tab] = (await res.text()).replace(/\s+$/, '');
+          } catch (e) {
+            cache[tab] =
+              '/* Não foi possível carregar ' + SOURCES[tab] + ' */\n' +
+              '/* Sirva a pasta por um servidor (ex.: python -m http.server) — fetch não roda em file:// */';
+          }
+        }
+        codeEl.textContent = cache[tab];
+      }
+
+      tabs.forEach((t) => t.addEventListener('click', () => {
+        tabs.forEach((x) => x.classList.toggle('is-active', x === t));
+        load(t.dataset.codeTab);
+      }));
+
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(cache[current] || '');
+          copyLabel.textContent = 'Copiado!';
+          setTimeout(() => { copyLabel.textContent = 'Copiar'; }, 1500);
+        } catch (e) {
+          copyLabel.textContent = 'Falhou';
+          setTimeout(() => { copyLabel.textContent = 'Copiar'; }, 1500);
+        }
+      });
+
+      load('html');
+    })();
+  </script>
+
+</body>
+</html>

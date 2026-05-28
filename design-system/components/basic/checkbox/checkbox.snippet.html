@@ -1,0 +1,45 @@
+<!-- Checkbox · DS 2.0 — markup canônico (copie verbatim) -->
+
+<!-- Só a caixa de seleção (sem label) -->
+<label class="checkbox">
+  <input type="checkbox" class="checkbox__input" />
+  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+</label>
+
+<!-- Caixa + label -->
+<label class="checkbox">
+  <input type="checkbox" class="checkbox__input" />
+  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+  <span class="checkbox__content">
+    <span class="checkbox__label">Insert a text to this element</span>
+  </span>
+</label>
+
+<!-- Caixa + label + texto complementar -->
+<label class="checkbox">
+  <input type="checkbox" class="checkbox__input" />
+  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+  <span class="checkbox__content">
+    <span class="checkbox__label">Insert a text to this element</span>
+    <span class="checkbox__help">Insert a text to this complementary element</span>
+  </span>
+</label>
+
+<!-- Indeterminado (half) — JS define a propriedade `indeterminate` no input -->
+<label class="checkbox">
+  <input type="checkbox" class="checkbox__input" ref="meio" />
+  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+  <span class="checkbox__content">
+    <span class="checkbox__label">Insert a text to this element</span>
+  </span>
+</label>
+<script>document.querySelector('.checkbox__input[ref="meio"]').indeterminate = true;</script>
+
+<!-- Desabilitado -->
+<label class="checkbox">
+  <input type="checkbox" class="checkbox__input" disabled />
+  <span class="checkbox__box" aria-hidden="true"><span class="checkbox__icon"></span></span>
+  <span class="checkbox__content">
+    <span class="checkbox__label">Insert a text to this element</span>
+  </span>
+</label>

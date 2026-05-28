@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════════════════
+   Primary Button — DS 2.0
+   Botão principal: ações/decisões importantes na interface.
+   Consome só tokens. BEM: .btn-primary / .btn-primary__<el> / --<mod>
+
+   Eixos (Figma 2911:18077 + ClickUp):
+     theme:  filled (default) | ghost
+     size:   medium (default/recomendado) | large | small | xsmall
+     estado: default | hover | active | disable
+     variação: sem ícone | ícone à esquerda | ícone à direita (sempre com texto)
+
+   Cor controlada por --btn-color / --btn-color-hover / --btn-color-active.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco base — filled · medium · default ───────────────────────── */
+.btn-primary {
+  --btn-color:        var(--color-blue-400); /* #378ef0 */
+  --btn-color-hover:  var(--color-blue-600); /* #1473e6 */
+  --btn-color-active: var(--color-blue-700); /* #0d66d0 */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                              /* medium */
+  box-sizing: border-box;
+  height: 36px;                           /* medium — altura fixa garante pixel-exato e iguala filled/ghost */
+  padding: 0 12px;                        /* só horizontal; a altura controla o vertical */
+  border: 1px solid transparent;          /* border-box absorve a borda dentro da altura (não soma px) */
+  border-radius: var(--radius-sm);        /* 4px */
+
+  background: var(--btn-color);
+  color: var(--color-white);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-btn-md);     /* 14px */
+  line-height: var(--line-height-btn-md); /* 20px */
+  font-weight: var(--font-weight-bold);   /* 700 */
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+/* Estados (pseudo p/ uso real + .is-* p/ documentação estática) ─── */
+.btn-primary:hover,
+.btn-primary.is-hover { background: var(--btn-color-hover); }
+.btn-primary:active,
+.btn-primary.is-active { background: var(--btn-color-active); }
+.btn-primary:focus-visible { outline: 2px solid var(--btn-color); outline-offset: 2px; }
+.btn-primary:disabled,
+.btn-primary.is-disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Theme — ghost ────────────────────────────────────────────────── */
+.btn-primary--ghost {
+  background: transparent;
+  border-color: var(--btn-color);
+  color: var(--btn-color);
+}
+/* Hover do ghost adota o padrão do filled: preenche com a cor de hover + texto
+   branco (transição suave herdada do .btn-primary base). */
+.btn-primary--ghost:hover,
+.btn-primary--ghost.is-hover { background: var(--btn-color-hover); border-color: var(--btn-color-hover); color: var(--color-white); }
+.btn-primary--ghost:active,
+.btn-primary--ghost.is-active { background: transparent; border-color: var(--btn-color-active); color: var(--btn-color-active); }
+
+/* Sizes (default = medium no bloco base; altura fixa por size = Figma) ─── */
+.btn-primary--large {
+  height: 42px; gap: 12px; padding: 0 16px;
+  font-size: var(--font-size-btn-lg);     /* 16px */
+  line-height: var(--line-height-btn-lg); /* 22px */
+}
+.btn-primary--small {
+  height: 30px; gap: 8px; padding: 0 10px;
+  font-size: var(--font-size-btn-sm);     /* 12px */
+  line-height: var(--line-height-btn-sm); /* 18px */
+}
+.btn-primary--xsmall {
+  height: 24px; gap: 6px; padding: 0 8px;
+  font-size: var(--font-size-btn-xs);     /* 10px */
+  line-height: var(--line-height-btn-xs); /* 16px */
+}
+
+/* Ícone (sempre acompanhado de texto; nunca sozinho) ───────────── */
+.btn-primary__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  width: 20px; height: 20px;              /* medium */
+}
+.btn-primary__icon .material-icons { font-size: 20px; line-height: 1; }
+.btn-primary--large  .btn-primary__icon { width: 22px; height: 22px; }
+.btn-primary--large  .btn-primary__icon .material-icons { font-size: 22px; }
+.btn-primary--small  .btn-primary__icon { width: 18px; height: 18px; }
+.btn-primary--small  .btn-primary__icon .material-icons { font-size: 18px; }
+.btn-primary--xsmall .btn-primary__icon { width: 12px; height: 12px; }
+.btn-primary--xsmall .btn-primary__icon .material-icons { font-size: 12px; }
+
+.btn-primary__label { display: inline-flex; align-items: center; }

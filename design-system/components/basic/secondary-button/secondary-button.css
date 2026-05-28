@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════════════════════════
+   Secondary Button — DS 2.0
+   Botão secundário: ações não-decisórias. Consome só tokens.
+   BEM: .btn-secondary / .btn-secondary__<el> / --<mod>
+
+   Eixos (Figma 3052:18964 + ClickUp):
+     theme:  filled-blue (default) | filled-gray | filled-red | white
+     size:   medium (default/recomendado) | large | small | xsmall
+     estado: default | hover | active | disable
+     variação: no-icon | icon+content | icon-only | icon+select | content+select
+
+   Arquitetura: o botão é um "pill" com até 3 segmentos
+   (`__icon` · `__label` · `__select`). Cada segmento tem fundo próprio
+   — em filled-gray isso gera o efeito 2-tone (ícone 1 shade mais escuro
+   que o label); em filled-blue todos têm a mesma cor.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco base — filled-blue · medium · default ────────────────── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: 36px;                           /* medium */
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);        /* 4px */
+  overflow: hidden;                       /* esconde a borda entre segmentos */
+  background: var(--color-blue-light-5);
+  color: var(--color-blue-700);
+  font-family: var(--font-family-base);
+  cursor: pointer;
+  transition: background 150ms ease, opacity 150ms ease;
+}
+
+/* Segmentos: ícone esquerdo, label central, select direito ────── */
+.btn-secondary__icon,
+.btn-secondary__label,
+.btn-secondary__select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: inherit;                    /* herda do botão por padrão */
+  color: inherit;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.btn-secondary__icon  { padding: 0 8px; flex-shrink: 0; }
+.btn-secondary__select { padding: 0 4px; flex-shrink: 0; }
+.btn-secondary__label {
+  padding: 0 12px;
+  font-size: var(--font-size-btn-md);     /* 14px */
+  line-height: var(--line-height-btn-md); /* 20px */
+  font-weight: var(--font-weight-regular);
+  white-space: nowrap;
+}
+
+.btn-secondary__icon .material-icons,
+.btn-secondary__select .material-icons { font-size: 20px; line-height: 1; }
+
+/* ── Estados — filled-blue (default theme) ───────────────────── */
+.btn-secondary:hover,
+.btn-secondary.is-hover { background: var(--color-blue-light-20); }
+.btn-secondary:active,
+.btn-secondary.is-active { background: var(--color-blue-500); color: var(--color-white); }
+.btn-secondary:focus-visible { outline: 2px solid var(--color-blue-400); outline-offset: 2px; }
+.btn-secondary:disabled,
+.btn-secondary.is-disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Theme: filled-gray (2-tone: ícone +1 shade > label) ─────── */
+.btn-secondary--filled-gray { background: var(--color-gray-200); color: var(--color-gray-800); }
+.btn-secondary--filled-gray .btn-secondary__label  { background: var(--color-gray-200); }
+.btn-secondary--filled-gray .btn-secondary__icon,
+.btn-secondary--filled-gray .btn-secondary__select { background: var(--color-gray-300); }
+
+.btn-secondary--filled-gray:hover,
+.btn-secondary--filled-gray.is-hover { background: var(--color-gray-300); }
+.btn-secondary--filled-gray:hover .btn-secondary__label,
+.btn-secondary--filled-gray.is-hover .btn-secondary__label { background: var(--color-gray-300); }
+.btn-secondary--filled-gray:hover .btn-secondary__icon,
+.btn-secondary--filled-gray:hover .btn-secondary__select,
+.btn-secondary--filled-gray.is-hover .btn-secondary__icon,
+.btn-secondary--filled-gray.is-hover .btn-secondary__select { background: var(--color-gray-400); }
+
+.btn-secondary--filled-gray:active,
+.btn-secondary--filled-gray.is-active { background: var(--color-gray-400); }
+.btn-secondary--filled-gray:active .btn-secondary__label,
+.btn-secondary--filled-gray.is-active .btn-secondary__label { background: var(--color-gray-400); }
+.btn-secondary--filled-gray:active .btn-secondary__icon,
+.btn-secondary--filled-gray:active .btn-secondary__select,
+.btn-secondary--filled-gray.is-active .btn-secondary__icon,
+.btn-secondary--filled-gray.is-active .btn-secondary__select { background: var(--color-gray-500); }
+
+.btn-secondary--filled-gray:focus-visible { outline: 2px solid var(--color-gray-500); outline-offset: 2px; }
+
+/* ── Theme: filled-red (monotom, igual padrão filled-blue) ───── */
+.btn-secondary--filled-red { background: var(--color-red-light-5); color: var(--color-red-600); }
+.btn-secondary--filled-red:hover,
+.btn-secondary--filled-red.is-hover { background: var(--color-red-light-20); }
+.btn-secondary--filled-red:active,
+.btn-secondary--filled-red.is-active { background: var(--color-red-400); color: var(--color-white); }
+.btn-secondary--filled-red:focus-visible { outline: 2px solid var(--color-red-400); outline-offset: 2px; }
+
+/* ── Theme: white (monotom, fundo branco) ────────────────────── */
+.btn-secondary--white { background: var(--color-white); color: var(--color-gray-800); }
+.btn-secondary--white:hover,
+.btn-secondary--white.is-hover { background: var(--color-gray-100); }
+.btn-secondary--white:active,
+.btn-secondary--white.is-active { background: var(--color-gray-300); color: var(--color-gray-800); }
+.btn-secondary--white:focus-visible { outline: 2px solid var(--color-gray-500); outline-offset: 2px; }
+
+/* ── Sizes (default = medium no bloco base) ──────────────────── */
+.btn-secondary--large { height: 42px; }
+.btn-secondary--large .btn-secondary__label {
+  padding: 0 14px;
+  font-size: var(--font-size-btn-lg);     /* 16px */
+  line-height: var(--line-height-btn-lg); /* 22px */
+}
+.btn-secondary--large .btn-secondary__icon  { padding: 0 10px; }
+.btn-secondary--large .btn-secondary__select { padding: 0 6px; }
+.btn-secondary--large .btn-secondary__icon .material-icons,
+.btn-secondary--large .btn-secondary__select .material-icons { font-size: 22px; }
+
+.btn-secondary--small { height: 30px; }
+.btn-secondary--small .btn-secondary__label {
+  padding: 0 10px;
+  font-size: var(--font-size-btn-sm);     /* 12px */
+  line-height: var(--line-height-btn-sm); /* 18px */
+}
+.btn-secondary--small .btn-secondary__icon  { padding: 0 6px; }
+.btn-secondary--small .btn-secondary__select { padding: 0 3px; }
+.btn-secondary--small .btn-secondary__icon .material-icons,
+.btn-secondary--small .btn-secondary__select .material-icons { font-size: 18px; }
+
+.btn-secondary--xsmall { height: 24px; }
+.btn-secondary--xsmall .btn-secondary__label {
+  padding: 0 8px;
+  font-size: var(--font-size-btn-xs);     /* 10px */
+  line-height: var(--line-height-btn-xs); /* 16px */
+}
+.btn-secondary--xsmall .btn-secondary__icon  { padding: 0 4px; }
+.btn-secondary--xsmall .btn-secondary__select { padding: 0 2px; }
+.btn-secondary--xsmall .btn-secondary__icon .material-icons,
+.btn-secondary--xsmall .btn-secondary__select .material-icons { font-size: 14px; }

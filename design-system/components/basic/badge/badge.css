@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════════════════════════════
+   Badge — DS 2.0
+   Demonstra valor numérico, notificação ou status. Consome só tokens.
+   BEM: .badge / .badge__<el> / .badge--<modificador>
+
+   Eixos de variação (Figma 3047:18909 + ClickUp):
+     theme:  filled (default) | ghost
+     size:   medium (default) | small
+     variation: complete (default, com conteúdo) | basic (dot 8px)
+     cor semântica: info/azul (default) | success | warning | danger | neutral
+
+   A cor é controlada por --badge-color; filled e ghost derivam dela.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bloco base — complete + filled + medium ──────────────────────── */
+.badge {
+  --badge-color: var(--color-blue-400);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  box-sizing: border-box;
+  height: 20px;                        /* medium — altura fixa = Figma (border-box absorve a borda) */
+  padding: 0 8px;                      /* só horizontal; a altura controla o vertical */
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;       /* reserva a borda p/ não pular no ghost */
+
+  background: var(--badge-color);
+  color: var(--color-white);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);       /* 10px */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: var(--line-height-xs);   /* 12px */
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Theme — ghost ────────────────────────────────────────────────── */
+.badge--ghost {
+  background: var(--color-white);
+  color: var(--badge-color);
+  border-color: var(--badge-color);
+}
+
+/* Size — small (mais usado, per ClickUp) ───────────────────────── */
+.badge--small {
+  height: 14px;
+  padding: 0 6px;
+}
+
+/* Cores semânticas (sobrescrevem --badge-color) ────────────────── */
+.badge--success { --badge-color: var(--color-green-400); }
+.badge--warning { --badge-color: var(--color-orange-400); }
+.badge--danger  { --badge-color: var(--color-red-400); }
+.badge--neutral { --badge-color: var(--color-gray-400); }
+
+/* Elementos ────────────────────────────────────────────────────── */
+/* REGRA DO COMPONENTE: o ícone do badge é SEMPRE filled (Material Icons,
+   nunca a variante Outlined). Por isso estilizamos apenas `.material-icons`. */
+.badge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.badge__icon .material-icons { font-size: 16px; line-height: 1; }
+.badge__icon svg,
+.badge__icon img { width: 100%; height: 100%; display: block; }
+
+.badge--small .badge__icon { width: 12px; height: 12px; }
+.badge--small .badge__icon .material-icons { font-size: 12px; }
+
+/* Label e counter herdam tipografia do .badge, mas reforçamos aqui pra
+   garantir consistência mesmo que o conteúdo venha de um elemento com reset. */
+.badge__label,
+.badge__counter {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);       /* 10px */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: var(--line-height-xs);   /* 12px */
+  text-transform: uppercase;
+}
+
+/* Variação — basic (dot sem conteúdo, tamanho único 8px) ───────── */
+.badge--basic {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  gap: 0;
+}
+/* basic ghost: bolinha vazada (BG branco + borda colorida) — herda de --ghost */
+
+/* Acessibilidade: quando o badge comunica estado dinâmico (contador,
+   notificação), o markup deve usar role="status" + aria-label legível.
+   Nada a estilizar aqui — ver badge.md. */
