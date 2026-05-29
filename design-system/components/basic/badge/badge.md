@@ -59,10 +59,13 @@ e os três são combináveis. A variação `basic` nunca tem conteúdo.
 
 ## Sizes (só em `complete`)
 
-| Size   | Padding   | Ícone | Uso                          | Classe          |
-|--------|-----------|-------|------------------------------|-----------------|
-| medium | `2px 8px` | 16px  | default                      | `.badge`        |
-| small  | `1px 6px` | 12px  | **mais frequente** (ClickUp) | `.badge--small` |
+A altura é fixa (`box-sizing: border-box`) — vertical é controlado pela
+`height`, não por padding-y. Padding só horizontal.
+
+| Size   | Altura | Padding | Ícone | Uso                          | Classe          |
+|--------|--------|---------|-------|------------------------------|-----------------|
+| medium | 20px   | `0 8px` | 16px  | default                      | `.badge`        |
+| small  | 14px   | `0 6px` | 12px  | **mais frequente** (ClickUp) | `.badge--small` |
 
 ## Cores semânticas
 
@@ -122,7 +125,7 @@ muda — não há pseudo-classes de interação.
 - `--radius-pill` — cantos totalmente arredondados
 - `--font-family-base` — Open Sans
 - `--font-size-xs` (10px) + `--line-height-xs` (12px) + `--font-weight-bold` (700) — tipografia
-- Padding/gap: valores finos do Figma (`2px 8px` medium, `1px 6px` small, `gap 2px`) — sub-4px é intencional pra densidade do componente
+- Padding/gap horizontais: `0 8px` (medium) · `0 6px` (small) · `gap 2px`. Altura fixa (20px / 14px) com `box-sizing: border-box` — sub-4px é intencional pra densidade do componente
 
 ---
 
@@ -169,4 +172,4 @@ responsabilidade de quem consome (trocar texto/classe).
 
 ## Versão
 
-`2.0.0` — 2026-05-27
+`2.0.1` — 2026-05-29

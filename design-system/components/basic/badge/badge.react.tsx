@@ -13,7 +13,7 @@
  * Requer que badge.css (ou o bundle do DS) esteja carregado.
  */
 
-import type { ReactNode } from 'react';
+import type { AriaRole } from 'react';
 
 export type BadgeTheme = 'filled' | 'ghost';
 export type BadgeSize = 'medium' | 'small';
@@ -26,19 +26,32 @@ interface BadgeBaseProps {
   className?: string;
 }
 
-export interface BadgeCompleteProps extends BadgeBaseProps {
+/**
+ * União que força a regra documentada "complete exige pelo menos um conteúdo
+ * (ícone, texto ou contador)" — pelo menos um dos três precisa estar presente
+ * no nível do tipo. Tentar `<Badge />` sem nenhum gera erro de compilação.
+ */
+type CompleteContent =
+  | { icon: string;  label?: string; counter?: string | number }
+  | { icon?: string; label: string;  counter?: string | number }
+  | { icon?: string; label?: string; counter: string | number };
+
+/**
+ * Props do `complete`. Conteúdo (icon/label/counter) tipado restritivo
+ * (string / string | number) — ReactNode aceitaria JSX arbitrário, que vai
+ * contra a intenção do componente (texto curto + número).
+ *
+ * `role` e `ariaLabel` opcionais — necessários quando o badge reflete estado
+ * dinâmico (contador que atualiza, etc.). Ver badge.md › Acessibilidade.
+ */
+export type BadgeCompleteProps = BadgeBaseProps & {
   variation?: 'complete';
   size?: BadgeSize;
-  /**
-   * Nome do glifo Material Icons. O badge SEMPRE renderiza o ícone na variante
-   * FILLED (`material-icons`) — nunca outlined. Ex.: icon="info".
-   */
-  icon?: string;
-  /** Texto curto, 1–2 palavras. Renderizado em UPPERCASE + bold pelo CSS. */
-  label?: ReactNode;
-  /** Contador numérico (ex.: 99). */
-  counter?: ReactNode;
-}
+  /** Use `'status'` quando o badge representa estado dinâmico. */
+  role?: AriaRole;
+  /** Descrição acessível quando o badge é dinâmico (contador, notificação). */
+  ariaLabel?: string;
+} & CompleteContent;
 
 export interface BadgeBasicProps extends BadgeBaseProps {
   variation: 'basic';
@@ -75,11 +88,12 @@ export function Badge(props: BadgeProps) {
     return <span className={classes} role="status" aria-label={props.ariaLabel} />;
   }
 
-  // Variação complete — ícone/texto/contador combináveis.
-  // Ícone é SEMPRE filled (className "material-icons").
-  const { icon, label, counter } = props;
+  // Variação complete — ícone/texto/contador combináveis. O type-system já
+  // garante que pelo menos um dos três está presente. Ícone é SEMPRE filled
+  // (className "material-icons").
+  const { icon, label, counter, role, ariaLabel } = props as BadgeCompleteProps;
   return (
-    <span className={classes}>
+    <span className={classes} role={role} aria-label={ariaLabel}>
       {icon != null && (
         <span className="badge__icon"><span className="material-icons">{icon}</span></span>
       )}

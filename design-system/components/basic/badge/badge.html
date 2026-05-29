@@ -10,7 +10,7 @@
   <!-- Badge usa ícone SEMPRE filled → só a fonte Material Icons (não a Outlined) -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <!-- Tokens do DS (fonte única de cores/tipografia/espaço/radius) -->
-  <link rel="stylesheet" href="../../../dist/tokens.css" />
+  <link rel="stylesheet" href="https://marcoskip.github.io/infoprice-prototipos/tokens.css" />
   <!-- CSS do componente (mesma pasta) -->
   <link rel="stylesheet" href="badge.css" />
   <style>
@@ -140,8 +140,8 @@
       <span class="pv__appbar__component">Badge</span>
     </div>
     <div class="pv__appbar__right">
-      <span class="pv__appbar__updated">Atualizado em 27/05/2026</span>
-      <span class="pv__appbar__version">v2.0.0</span>
+      <span class="pv__appbar__updated">Atualizado em 29/05/2026</span>
+      <span class="pv__appbar__version">v2.0.1</span>
     </div>
   </header>
 
@@ -160,11 +160,20 @@
     <!-- entrada mais recente (sempre visível) -->
     <dl class="pv__changelog-grid">
       <dt>Data</dt>
-      <dd>27/05/2026</dd>
+      <dd>29/05/2026</dd>
       <dt>Motivo</dt>
-      <dd>Correção de altura dos tamanhos para bater com o Figma.</dd>
+      <dd>Revisão de consistência entre os 5 arquivos do componente (apontamentos do PM via Claude).</dd>
       <dt>Alteração</dt>
-      <dd>Ajuste do box model: alturas fixas por size (medium 20px · small 14px) com <code>box-sizing: border-box</code>. A altura automática não reproduzia o Figma (medium saía 18px, small 16px). Agora filled e ghost têm altura idêntica e pixel-exata.</dd>
+      <dd>Correção de 6 inconsistências entre <code>.md</code>, <code>.html</code>, <code>.css</code>, <code>.react.tsx</code> e <code>.snippet.html</code>:
+        <ol style="margin:6px 0 0 18px; padding:0;">
+          <li><strong>Nomenclatura:</strong> trocado <code>with-content</code> por <code>complete</code> no <code>.html</code> (era o único arquivo divergente).</li>
+          <li><strong>Tabela de padding desatualizada:</strong> <code>.md</code> reflete agora altura fixa (20px/14px) + padding horizontal (<code>0 8px</code> / <code>0 6px</code>), em vez do antigo <code>2px 8px</code> / <code>1px 6px</code>.</li>
+          <li><strong>Markup BEM nos previews:</strong> todos os exemplos do <code>.html</code> agora envolvem o texto em <code>.badge__label</code> (antes usavam texto solto dentro de <code>.badge</code>, violando a convenção do próprio componente).</li>
+          <li><strong>React expõe <code>role</code> e <code>ariaLabel</code> no <code>complete</code></strong>, necessários quando o badge reflete estado dinâmico (contador, notificação).</li>
+          <li><strong>Type-system força "pelo menos um conteúdo":</strong> <code>BadgeCompleteProps</code> agora exige <code>icon</code>, <code>label</code> ou <code>counter</code> via união discriminada — <code>&lt;Badge /&gt;</code> vazio vira erro de compilação.</li>
+          <li><strong>Tipos restritivos:</strong> <code>label: string</code> e <code>counter: string | number</code> (antes <code>ReactNode</code>, que permitia JSX arbitrário contra a intenção da doc).</li>
+        </ol>
+      </dd>
       <dt>Modificado por</dt>
       <dd>Marcos Keller</dd>
     </dl>
@@ -177,6 +186,18 @@
 
     <!-- histórico (entradas passadas; mais recente no topo) -->
     <div class="pv__changelog-history" hidden data-changelog-history>
+      <div class="pv__changelog-entry">
+        <dl class="pv__changelog-grid">
+          <dt>Data</dt>
+          <dd>27/05/2026</dd>
+          <dt>Motivo</dt>
+          <dd>Correção de altura dos tamanhos para bater com o Figma.</dd>
+          <dt>Alteração</dt>
+          <dd>Ajuste do box model: alturas fixas por size (medium 20px · small 14px) com <code>box-sizing: border-box</code>. A altura automática não reproduzia o Figma (medium saía 18px, small 16px). Agora filled e ghost têm altura idêntica e pixel-exata.</dd>
+          <dt>Modificado por</dt>
+          <dd>Marcos Keller</dd>
+        </dl>
+      </div>
       <div class="pv__changelog-entry">
         <dl class="pv__changelog-grid">
           <dt>Data</dt>
@@ -197,8 +218,8 @@
     <h2 class="pv__section-title">Themes</h2>
     <p class="pv__section-sub">O componente possui dois estilos de aplicação: <code>filled</code> e <code>ghost</code>.</p>
     <div class="pv__row">
-      <div class="pv__cell"><span class="badge">filled</span><small>filled</small></div>
-      <div class="pv__cell"><span class="badge badge--ghost">ghost</span><small>ghost</small></div>
+      <div class="pv__cell"><span class="badge"><span class="badge__label">filled</span></span><small>filled</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost"><span class="badge__label">ghost</span></span><small>ghost</small></div>
     </div>
   </section>
 
@@ -207,7 +228,7 @@
   <!-- ── Variations (guarda-chuva) ───────────────────────── -->
   <section class="pv__section">
     <h2 class="pv__section-title">Variations</h2>
-    <p class="pv__section-sub">Badge possui duas variações principais: <code>basic</code> e <code>with-content</code>. As cores do badge podem ser alteradas conforme a necessidade na interface, porém deve ser respeitado nossas cores semânticas.</p>
+    <p class="pv__section-sub">Badge possui duas variações principais: <code>basic</code> e <code>complete</code>. As cores do badge podem ser alteradas conforme a necessidade na interface, porém deve ser respeitado nossas cores semânticas.</p>
   </section>
 
   <!-- ── Basic ───────────────────────────────────────────── -->
@@ -249,10 +270,10 @@
   <!-- ── Sizes ───────────────────────────────────────────── -->
   <section class="pv__section">
     <h2 class="pv__section-title">Sizes</h2>
-    <p class="pv__section-sub">O badge, na variação with-content, possui dois tamanhos: <code>medium</code> e <code>small</code> sendo o tamanho <em>small</em> o utilizado com maior frequência.</p>
+    <p class="pv__section-sub">O badge, na variação complete, possui dois tamanhos: <code>medium</code> e <code>small</code> sendo o tamanho <em>small</em> o utilizado com maior frequência.</p>
     <div class="pv__row">
-      <div class="pv__cell"><span class="badge">medium</span><small>medium</small></div>
-      <div class="pv__cell"><span class="badge badge--small">small</span><small>small</small></div>
+      <div class="pv__cell"><span class="badge"><span class="badge__label">medium</span></span><small>medium</small></div>
+      <div class="pv__cell"><span class="badge badge--small"><span class="badge__label">small</span></span><small>small</small></div>
     </div>
   </section>
 
@@ -261,18 +282,18 @@
     <h2 class="pv__section-title">Cores semânticas</h2>
     <p class="pv__section-sub">Respeitar a paleta semântica do DS. filled (acima) / ghost (abaixo).</p>
     <div class="pv__row">
-      <div class="pv__cell"><span class="badge">info</span><small>(default)</small></div>
-      <div class="pv__cell"><span class="badge badge--success">success</span><small>--success</small></div>
-      <div class="pv__cell"><span class="badge badge--warning">warning</span><small>--warning</small></div>
-      <div class="pv__cell"><span class="badge badge--danger">danger</span><small>--danger</small></div>
-      <div class="pv__cell"><span class="badge badge--neutral">neutral</span><small>--neutral</small></div>
+      <div class="pv__cell"><span class="badge"><span class="badge__label">info</span></span><small>(default)</small></div>
+      <div class="pv__cell"><span class="badge badge--success"><span class="badge__label">success</span></span><small>--success</small></div>
+      <div class="pv__cell"><span class="badge badge--warning"><span class="badge__label">warning</span></span><small>--warning</small></div>
+      <div class="pv__cell"><span class="badge badge--danger"><span class="badge__label">danger</span></span><small>--danger</small></div>
+      <div class="pv__cell"><span class="badge badge--neutral"><span class="badge__label">neutral</span></span><small>--neutral</small></div>
     </div>
     <div class="pv__row" style="margin-top:12px">
-      <div class="pv__cell"><span class="badge badge--ghost">info</span><small>(default)</small></div>
-      <div class="pv__cell"><span class="badge badge--ghost badge--success">success</span><small>--success</small></div>
-      <div class="pv__cell"><span class="badge badge--ghost badge--warning">warning</span><small>--warning</small></div>
-      <div class="pv__cell"><span class="badge badge--ghost badge--danger">danger</span><small>--danger</small></div>
-      <div class="pv__cell"><span class="badge badge--ghost badge--neutral">neutral</span><small>--neutral</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost"><span class="badge__label">info</span></span><small>(default)</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--success"><span class="badge__label">success</span></span><small>--success</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--warning"><span class="badge__label">warning</span></span><small>--warning</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--danger"><span class="badge__label">danger</span></span><small>--danger</small></div>
+      <div class="pv__cell"><span class="badge badge--ghost badge--neutral"><span class="badge__label">neutral</span></span><small>--neutral</small></div>
     </div>
   </section>
 
